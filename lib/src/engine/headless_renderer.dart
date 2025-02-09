@@ -19,9 +19,7 @@ class HeadlessRenderer {
             size: Size(width.toDouble(), height.toDouble()),
             devicePixelRatio: 1.0,
           ),
-          view: ui.SingletonFlutterWindow(
-            platformDispatcher: ui.PlatformDispatcher.instance,
-          ),
+          view: PlatformDispatcher.instance.views.first,
         ) {
     _buildOwner = BuildOwner(focusManager: FocusManager());
     pipelineOwner.rootNode = renderView;
