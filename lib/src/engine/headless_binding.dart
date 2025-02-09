@@ -4,25 +4,18 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
-abstract class HeadlessFlutterBinding extends BindingBase
+class HeadlessFlutterBinding {}
+
+class _HeadlessFlutterBindingImpl extends BindingBase
     with
         SchedulerBinding,
         ServicesBinding,
         PaintingBinding,
         SemanticsBinding,
         GestureBinding,
-        RendererBinding {
-  static HeadlessFlutterBinding? _instance;
-
-  static HeadlessFlutterBinding ensureInitialized() {
-    if (kIsWeb) {
-      throw UnsupportedError(
-          'Headless Flutter is not supported on web platforms');
-    }
-    return _instance ??= HeadlessFlutterBinding._();
-  }
-
-  HeadlessFlutterBinding._() {
+        RendererBinding
+    implements HeadlessFlutterBinding {
+  _HeadlessFlutterBindingImpl._() {
     // Initialize services that don't require a window
     initInstances();
     // Disable unnecessary services
@@ -33,12 +26,12 @@ abstract class HeadlessFlutterBinding extends BindingBase
   @override
   void initInstances() {
     super.initInstances();
-    _instance = this;
   }
 
   @override
-  void handleBeginFrame(Duration? rawTimeStamp) {}
-
-  @override
   void handleDrawFrame() {}
+}
+
+extension on BinaryMessenger {
+  void setMockMessageHandler(param0, param1) {}
 }
