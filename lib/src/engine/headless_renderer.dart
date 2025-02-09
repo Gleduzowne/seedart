@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
@@ -6,6 +7,8 @@ class HeadlessRenderer {
   final int height;
   final RenderView renderView;
   final PipelineOwner pipelineOwner;
+  BuildOwner? _buildOwner;
+  RenderObjectToWidgetElement<RenderBox>? _element;
 
   HeadlessRenderer({
     required this.width,
@@ -16,24 +19,33 @@ class HeadlessRenderer {
             size: Size(width.toDouble(), height.toDouble()),
             devicePixelRatio: 1.0,
           ),
-          window: WidgetsBinding.instance.window,
+          view: ui.SingletonFlutterWindow(
+            platformDispatcher: ui.PlatformDispatcher.instance,
+          ),
         ) {
+    _buildOwner = BuildOwner(focusManager: FocusManager());
     pipelineOwner.rootNode = renderView;
   }
 
   void render(Widget scene) {
-    final BuildOwner buildOwner = BuildOwner(focusManager: FocusManager());
-    final RenderObjectToWidgetElement<RenderBox> element =
-        RenderObjectToWidgetAdapter<RenderBox>(
+    _element = RenderObjectToWidgetAdapter<RenderBox>(
       container: renderView,
-      child: scene,
-    ).attachToRenderTree(buildOwner);
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: scene,
+      ),
+    ).attachToRenderTree(_buildOwner!);
 
-    buildOwner.buildScope(element);
-    buildOwner.finalizeTree();
+    _buildOwner!.buildScope(_element!);
+    _buildOwner!.finalizeTree();
 
     pipelineOwner.flushLayout();
     pipelineOwner.flushCompositingBits();
     pipelineOwner.flushPaint();
+  }
+
+  void dispose() {
+    _element = null;
+    _buildOwner = null;
   }
 }
