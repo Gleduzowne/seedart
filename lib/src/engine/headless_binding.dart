@@ -4,7 +4,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
-class HeadlessFlutterBinding {}
+class HeadlessFlutterBinding {
+  static void ensureInitialized() {}
+}
 
 class _HeadlessFlutterBindingImpl extends BindingBase
     with
@@ -21,11 +23,6 @@ class _HeadlessFlutterBindingImpl extends BindingBase
     // Disable unnecessary services
     ServicesBinding.instance.defaultBinaryMessenger
         .setMockMessageHandler(null, null);
-  }
-
-  @override
-  void initInstances() {
-    super.initInstances();
   }
 
   @override
