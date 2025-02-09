@@ -1,0 +1,26 @@
+name: seedart
+description: A CLI animation engine built with Flutter
+version: 0.0.1
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  args: ^2.5.0
+  flutter:
+    sdk: flutter
+  ffmpeg_kit_flutter: ^5.1.0
+  path: ^1.8.3
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.24.0
+  flutter_test:
+    sdk: flutter
+
+# This is needed to use Flutter in a CLI app
+flutter:
+  module:
+    androidX: true
+    androidPackage: com.example.seedart
+    iosBundleIdentifier: com.example.seedart
