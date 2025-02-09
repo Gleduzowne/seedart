@@ -9,9 +9,9 @@ dependencies:
   args: ^2.5.0
   flutter:
     sdk: flutter
-  ffmpeg_kit_flutter_platform_interface: ^5.1.0  # Platform-agnostic FFmpeg interface
   path: ^1.8.3
   image: ^4.1.3  # For image processing and file saving
+  vector_math: ^2.1.4  # For 3D transformations
 
 dev_dependencies:
   lints: ^5.0.0

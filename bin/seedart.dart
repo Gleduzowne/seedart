@@ -1,5 +1,6 @@
 import 'package:args/args.dart';
 import 'package:seedart/src/cli.dart' show runCLI;
+import 'package:seedart/src/engine/headless_binding.dart';
 
 const String version = '0.0.1';
 
@@ -30,5 +31,9 @@ void printUsage(ArgParser argParser) {
 }
 
 void main(List<String> arguments) async {
+  // Initialize headless Flutter binding
+  HeadlessFlutterBinding.ensureInitialized();
+  
+  // Run the CLI
   await runCLI(arguments);
 }

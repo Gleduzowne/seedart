@@ -5,6 +5,7 @@ import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
 import './headless_renderer.dart';
 import './frame_capture.dart';
+import './script_loader.dart';
 
 class AnimationEngine {
   final HeadlessRenderer renderer;
@@ -19,34 +20,31 @@ class AnimationEngine {
   }) : renderer = HeadlessRenderer(width: width, height: height);
 
   Future<void> renderAnimation({
-    required Widget scene,
+    required String scriptPath,
     required Duration duration,
+    Map<String, dynamic> params = const {},
   }) async {
     final int totalFrames = (duration.inMilliseconds / 1000 * fps).ceil();
     final String framesDir = path.join(path.dirname(outputPath), 'frames');
-    
-    // Create frames directory if it doesn't exist
+
     await Directory(framesDir).create(recursive: true);
 
-    // Render each frame
     for (int i = 0; i < totalFrames; i++) {
       final double t = i / totalFrames;
 
-      // Update animation state
+      // Load and render the current frame from script
+      final scene = await AnimationScript.loadScript(scriptPath, params, t);
       renderer.render(scene);
 
-      // Capture frame
       final image = await FrameCapture.captureFrame(renderer.renderView);
       final bytes = await FrameCapture.imageToBytes(image);
 
-      // Convert bytes to image and save
       final frameImage = img.decodePng(bytes);
       if (frameImage != null) {
         final frameFile = path.join(framesDir, 'frame_$i.png');
         File(frameFile).writeAsBytesSync(img.encodePng(frameImage));
       }
 
-      // Report progress
       if (i % 10 == 0) {
         stdout.write('\rRendering frame $i/$totalFrames');
       }
@@ -55,7 +53,7 @@ class AnimationEngine {
 
     // Use system FFmpeg to combine frames
     final result = await Process.run('ffmpeg', [
-      '-y',  // Overwrite output file if it exists
+      '-y', // Overwrite output file if it exists
       '-framerate',
       fps.toString(),
       '-i',
