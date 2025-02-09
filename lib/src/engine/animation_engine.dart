@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/widgets.dart';
 import 'package:image/image.dart' as img;
+import 'dart:typed_data';
 import 'package:path/path.dart' as path;
 import './headless_renderer.dart';
 import './frame_capture.dart';
@@ -39,7 +39,7 @@ class AnimationEngine {
       final image = await FrameCapture.captureFrame(renderer.renderView);
       final bytes = await FrameCapture.imageToBytes(image);
 
-      final frameImage = img.decodePng(bytes);
+      final frameImage = img.decodePng(Uint8List.fromList(bytes));
       if (frameImage != null) {
         final frameFile = path.join(framesDir, 'frame_$i.png');
         File(frameFile).writeAsBytesSync(img.encodePng(frameImage));

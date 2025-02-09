@@ -1,6 +1,5 @@
 import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 class FrameCapture {
   static Future<ui.Image> captureFrame(RenderObject renderObject) async {
@@ -12,13 +11,7 @@ class FrameCapture {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
 
-    layer.paint(canvas);
-
-    final picture = recorder.endRecording();
-    final image = await picture.toImage(
-      renderObject.paintBounds.width.ceil(),
-      renderObject.paintBounds.height.ceil(),
-    );
+    final image = await layer.toImage(renderObject.paintBounds);
 
     return image;
   }
