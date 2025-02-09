@@ -3,13 +3,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 abstract class HeadlessFlutterBinding extends BindingBase
     with
         SchedulerBinding,
         ServicesBinding,
         PaintingBinding,
+        SemanticsBinding,
         GestureBinding,
         RendererBinding {
   static HeadlessFlutterBinding? _instance;
